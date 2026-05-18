@@ -1,10 +1,7 @@
 import supabase from "./supabase";
 
-const login = async (email: string, password: string) => {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+const login = async (credentials) => {
+  const { data, error } = await supabase.auth.signInWithPassword(credentials);
   if (error) {
     console.error("Error logging in:", error);
     return null;

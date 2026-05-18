@@ -11,8 +11,10 @@ import Account from "./pages/Account";
 import Users from "./pages/Users";
 import Bookings from "./pages/Bookings";
 import Dashboard from "./pages/Dashboard";
-import { QueryClient } from "@tanstack/react-query";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ProtectedRoute from "./ui/ProtectedRoute";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Toaster } from "react-hot-toast";
 // Setup TanStack Query
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,7 +26,11 @@ const queryClient = new QueryClient({
 
 const router = createBrowserRouter([
   {
-    element: <AppLayout />,
+    element: (
+      <ProtectedRoute>
+        <AppLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "/dashboard",
@@ -46,33 +52,45 @@ const router = createBrowserRouter([
         path: "/settings",
         element: <Settings />,
       },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "*",
-        element: <PageNotFound />,
-      },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "*",
+    element: <PageNotFound />,
   },
 ]);
 
 function App() {
-  // useEffect(()=>{
-  //   async function testConnection(){
-  //     const {data,error} = await supabase.from('cabins').select('*')
-  //     if(error) {
-  //       console.error('Error fetching data:', error)
-  //     } else {
-  //       console.log('Data fetched successfully:', data)
-  //     }
-
-  //   }
-
-  //   testConnection()
-  // })
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
+      <RouterProvider router={router} />;
+      <Toaster
+        position="top-center"
+        gutter={12}
+        containerStyle={{ margin: "8px" }}
+        toastOptions={{
+          success: {
+            duration: 3000,
+          },
+          error: {
+            duration: 5000,
+          },
+          style: {
+            fontSize: "16px",
+            maxWidth: "500px",
+            padding: "16px 24px",
+            backgroundColor: "#fff",
+            color: "#374151",
+          },
+        }}
+      />
+    </QueryClientProvider>
+  );
 }
 
 export default App;
