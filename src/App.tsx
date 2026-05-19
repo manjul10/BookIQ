@@ -15,6 +15,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ProtectedRoute from "./ui/ProtectedRoute";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "react-hot-toast";
+import Cabins from "./pages/Cabins";
 // Setup TanStack Query
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
         path: "/settings",
         element: <Settings />,
       },
+      {
+        path:"/cabins",
+        element:<Cabins/>
+      }
     ],
   },
   {

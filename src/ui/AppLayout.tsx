@@ -4,7 +4,7 @@ import SideBar from "./SideBar";
 
 const AppLayout = () => {
   return (
-    <div className="grid min-h-screen grid-cols-[250px_1fr] grid-rows-[60px_1fr]">
+    <div className="grid h-screen grid-cols-[14rem_1fr] grid-rows-[auto_1fr]">
       <Header />
       <SideBar />
       <main className="bg-gray-50 overflow-scroll p-10">
