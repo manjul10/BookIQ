@@ -12,25 +12,20 @@ const CreateCabinForm = ({ cabinToEdit = {}, onCloseModal }) => {
   const { isCreating, createCabin } = useCreateCabin();
   const { isEditing, editCabin } = useEditCabin();
   const isWorking = isCreating || isEditing;
-  console.log("cabinToEdit.id:", cabinToEdit.id);
-  const { id, ...editValues } = cabinToEdit;
-  // const editId = typeof id === "number"? id :undefined;
-  const editId =
-    typeof id === "number"
-      ? id
-      : typeof id === "string" && !isNaN(Number(id))
-        ? Number(id)
-        : undefined;
-  const isEditSession = Boolean(editId);
+
+  const id = cabinToEdit.id;
+  const isEditSession = id !== undefined && id !== null;
+  const editId = isEditSession ? Number(id) : undefined;
+
   const { register, handleSubmit, reset, getValues, formState } = useForm({
-    defaultValues: isEditSession ? editValues : {},
+    defaultValues: isEditSession ? cabinToEdit : {},
   });
 
   const { errors } = formState;
 
   const onSubmit = (data) => {
     const image = typeof data.image === "string" ? data.image : data.image[0];
-    if (isEditSession)
+    if (isEditSession && editId) {
       editCabin(
         { newCabinData: { ...data, image }, id: editId },
         {
@@ -40,20 +35,20 @@ const CreateCabinForm = ({ cabinToEdit = {}, onCloseModal }) => {
           },
         },
       );
-    else
-      createCabin(
-        { ...data, image: image },
-        {
-          onSuccess: () => {
-            reset();
-            onCloseModal?.();
-          },
+    } else {
+      const newCabin = { ...data, image };
+      delete newCabin.id;
+      createCabin(newCabin, {
+        onSuccess: () => {
+          reset();
+          onCloseModal?.();
         },
-      );
+      });
+    }
   };
 
   const onError = (errors) => {
-    console.log(errors);
+    // console.log(errors);
   };
 
   return (

@@ -13,6 +13,8 @@ const BookingRow = ({ booking }) => {
     cabins: { name: cabinName },
   } = booking;
 
+
+
   const statusToColor = {
     unconformed: "bg-blue-100 text-blue-700",
     "checked-in": "bg-green-100 text-green-700",

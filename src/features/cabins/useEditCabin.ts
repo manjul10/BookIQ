@@ -14,6 +14,6 @@ export const useEditCabin = () => {
     },
     onError: (err) => toast.error(err.message),
   });
-console.log(editCabin)
+
   return { isEditing, editCabin };
 };

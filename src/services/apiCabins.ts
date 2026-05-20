@@ -1,7 +1,12 @@
 import supabase, { supabaseUrl } from "./supabase";
 
 export const getCabins = async () => {
-  const { data, error } = await supabase.from("cabins").select("*");
+  const { data, error } = await supabase
+    .from("cabins")
+    .select(
+      "id, created_at, name, maxCapacity, regularPrice, discount, description, image",
+    );
+  // const { data, error } = await supabase.from("cabins").select("*");
 
   if (error) {
     console.log(error);
@@ -27,16 +32,21 @@ export const createEditCabin = async (newCabin, id) => {
   //create/edit cabin in the database
   let query;
 
-  let cabinDataToInsertUpdate = {...newCabin, image:imagePath}
-  if (id){
+  let cabinDataToInsertUpdate = { ...newCabin, image: imagePath };
+  if (id) {
     delete cabinDataToInsertUpdate.id;
   }
   //Create
   if (!id) query = supabase.from("cabins").insert([cabinDataToInsertUpdate]);
 
   //Edit
-  if (id) query = supabase.from("cabins").update(cabinDataToInsertUpdate).eq("id", Number(id));
-
+  // if (id) query = supabase.from("cabins").update(cabinDataToInsertUpdate).eq("id", Number(id));
+  if (id && typeof id !== "object")
+    query = supabase
+      .from("cabins")
+      .update(cabinDataToInsertUpdate)
+      .eq("id", Number(id));
+      
   const { data, error } = await query.select().single();
 
   if (error) {
@@ -51,8 +61,8 @@ export const createEditCabin = async (newCabin, id) => {
   const { error: storageError } = await supabase.storage
     .from("cabin-images")
     .upload(imageName, newCabin.image, {
-      cacheControl:"3600",
-      upsert:false
+      cacheControl: "3600",
+      upsert: false,
     });
 
   //Delete the cabin If there was an error uploading image
@@ -71,8 +81,8 @@ export const deleteCabin = async (id) => {
   const { data, error } = await supabase.from("cabins").delete().eq("id", id);
 
   if (error) {
-    console.error(error);
     throw new Error("Cabin could not be deleted");
   }
   return data;
 };
+;
